@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transformer &amp; Continual Learning 3D Visualizer</title>
+  <link rel="stylesheet" href="./style.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="canvas-container"></div>
+  <div id="labels-layer"></div>
+
+  <!-- Top HUD -->
+  <div class="hud-top">
+    <div class="card title-card">
+      <h1>
+        NEURAL TOPOLOGY LAB
+        <span class="badge">3D Transformer + Continual Learning</span>
+      </h1>
+      <p>
+        Click any token node in 3D space or the dock below to inspect multi-head self-attention, MLP activation magnitudes, and how <strong>Weight Freeze + Relational Adapters</strong> prevent catastrophic forgetting.
+      </p>
+    </div>
+
+    <div class="card controls-card">
+      <div class="control-group">
+        <div class="control-label">
+          <span>Attention Head Filter</span>
+          <span id="head-readout" class="accent-cyan">All Heads (H1–H3)</span>
+        </div>
+        <div class="segmented" id="head-selector">
+          <button class="active" data-head="all">All Heads</button>
+          <button data-head="0">H1 · Syntax</button>
+          <button data-head="1">H2 · Semantic</button>
+          <button data-head="2" class="span-three">H3 · Long-Range / Causal</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span>Plasticity &amp; Memory Mode</span>
+          <span id="mode-readout" class="accent-emerald">Adapter Update</span>
+        </div>
+        <div class="segmented two-col" id="mode-selector">
+          <button class="active emerald" data-mode="adapter">Weight Freeze + Adapter</button>
+          <button data-mode="full">Full Fine-Tune (Overwrite)</button>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="action-btn" id="train-step-btn">⚡ Simulate New Task Gradient Step</button>
+        <button class="ghost-btn" id="reset-btn">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Token Dock & Telemetry -->
+  <div class="hud-bottom">
+    <div class="card token-dock">
+      <div class="control-label">
+        <span>Active Sequence Tokens (Click to Focus Query Q_i)</span>
+        <span id="active-token-name" class="accent-cyan">Token [3]: "memory"</span>
+      </div>
+      <div class="token-row" id="token-buttons"></div>
+      <div class="prompt-input-row">
+        <input type="text" id="prompt-input" maxlength="64" value="Transformers preserve old memory via adapters" />
+        <button class="outline-btn" id="tokenize-btn">Tokenize</button>
+      </div>
+    </div>
+
+    <div class="card telemetry-card">
+      <div class="control-label">
+        <span>Layer Telemetry &amp; Plasticity Legend</span>
+        <span id="step-counter">Step: 0</span>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><span class="dot dot-cyan"></span>Frozen Backbone W₀</div>
+        <div class="legend-item"><span class="dot dot-emerald"></span>Active Adapter ΔW</div>
+        <div class="legend-item"><span class="dot dot-amber"></span>Attention Head Arcs</div>
+        <div class="legend-item"><span class="dot dot-rose"></span>Overwritten Drift</div>
+      </div>
+      <div class="status-banner" id="status-text">
+        <strong>Adapter Mode:</strong> Core backbone weights remain locked in crystalline cyan while low-rank adapter rings absorb new task gradients without erasing prior knowledge.
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./script.js"></script>
+</body>
+</html>
